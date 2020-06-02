@@ -1,6 +1,5 @@
 # base functions to clean MAR data #
 
-
 initial_clean_mar = function(dat){
   # remove entirely NA rows
   dt_r = dat[rowSums(is.na(dat)) != ncol(dat),] # 
