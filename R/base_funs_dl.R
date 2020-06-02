@@ -1,6 +1,8 @@
 # functions to download MAR data
 
 # get the main MAR data by month #
+' This needs to be altered to take latest iteration of the timeseries'
+
 get_main_MAR = function(){
   mar_dat ='https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2020/04/MAR_Comm-Timeseries-Feb-20-EfWXs.xls'
   # will work for current data, historic will be more challenging
