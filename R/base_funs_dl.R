@@ -1,18 +1,44 @@
 # functions to download MAR data
-
 # get the main MAR data by month #
 ' This needs to be altered to take latest iteration of the timeseries'
+# find all excel documents on the MAR site
+find_excels_MAR = function(type_request = 'commissioner'){
+  if(!(type_request %in% c('commissioner', 'provider'))){stop('Type should be a character string of either commissioner or provider, depending on what data is needed')}
 
-get_main_MAR = function(){
-  mar_dat ='https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2020/04/MAR_Comm-Timeseries-Feb-20-EfWXs.xls'
+  
+  
+  base_url = 'https://www.england.nhs.uk/statistics/statistical-work-areas/hospital-activity/monthly-hospital-activity/mar-data/'
+  # find first .xls with 'Comm-Timeseries'
+  library(rvest)
+
+  page = read_html(base_url)
+  
+  # read the page and extract links.
+  a = page %>%
+    html_nodes('a') %>% #get links
+    html_attr("href") #identify those links
+  # find.xls files
+  excels = a[which(grepl('\\.xls',a))] # find excel sheets
+  return(excels)
+}
+
+get_main_MAR = function(excels){
+  library(readxl)
+  
+  mar_dat = excels[grepl('timeseries', tolower(excels))][[1]]
   # will work for current data, historic will be more challenging
+  
   temp_f = tempfile()
   #download to temp file
+  
   dl_file = download.file(mar_dat, mode='wb', destfile=temp_f)
   #read this sheet
+  
   dt = readxl::read_xls(temp_f, sheet=1)
+  
   #remove only this temporary file from tempdir()
   file.remove(temp_f)
+  
   return(dt)
 }
 
